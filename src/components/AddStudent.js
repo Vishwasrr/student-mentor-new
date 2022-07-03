@@ -22,9 +22,7 @@ function AddStudent() {
         })
         .then((res)=>{
             setRes(res.data.message)
-            setTimeout(()=>{
-                window.location.reload();
-            })
+            
         }).catch((err)=>{
             console.log(err);
         })
