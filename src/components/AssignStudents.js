@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Redirect } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 import "../index.css";
 
@@ -9,6 +11,7 @@ function AssignStudents() {
   let [data, setData] = useState([]);
   let [data2, setData2] = useState([]);
   let [res, setRes] = useState("");
+  const history = useHistory();
 
   async function getData() {
     let response = await axios.get("https://express-mentor-stud.herokuapp.com/all-mentors");
@@ -26,7 +29,7 @@ function AssignStudents() {
   let handleEvent = async () => {
     console.log(sName);
     console.log(mName);
-    let value=[];
+    let value = [];
     value.push(sName)
     console.log(value)
 
@@ -37,6 +40,7 @@ function AssignStudents() {
       })
       .then((res) => {
         setRes(res.data.message);
+        history.push("/home");
       })
       .catch((err) => {
         console.log(err);
