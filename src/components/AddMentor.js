@@ -1,57 +1,57 @@
-import {useEffect,useState} from 'react'
+import { useHistory } from "react-router-dom";
+import { useEffect, useState } from 'react'
 import '../index.css'
 import Select from 'react-select';
 import axios from 'axios'
 function AddMentor() {
-    let [mName,setmName]=useState("");
-    let [sName,setsName]=useState([]);
-    let [res,setRes]=useState("");
-    let [options,setOptions]=useState([]);
+    let [mName, setmName] = useState("");
+    let [sName, setsName] = useState([]);
+    let [res, setRes] = useState("");
+    let [options, setOptions] = useState([]);
+    const history = useHistory();
 
-    async function getData(){
+    async function getData() {
         await axios.get("https://express-mentor-stud.herokuapp.com/all-students")
-        .then((response)=>{
-            response.data.map((e)=>{
-                if(!e.studentMentor){
-                    options.push({
-                        value:options.length+1,
-                        label:e.studentName
-                    })
-                }
+            .then((response) => {
+                response.data.map((e) => {
+                    if (!e.studentMentor) {
+                        options.push({
+                            value: options.length + 1,
+                            label: e.studentName
+                        })
+                    }
+                })
+                console.log(options);
             })
-            console.log(options);
-        })
-        .catch((error)=>console.log(error))
+            .catch((error) => console.log(error))
     }
-    useEffect(()=>{
+    useEffect(() => {
         getData();
-    },[])
+    }, [])
 
-    let handleEvent = async()=>{
-        await axios.post("https://express-mentor-stud.herokuapp.com/add-mentor",{
-            mentorName:mName,
-            mentorStudents:sName
+    let handleEvent = async () => {
+        await axios.post("https://express-mentor-stud.herokuapp.com/add-mentor", {
+            mentorName: mName,
+            mentorStudents: sName
         })
-        .then((res)=>{
-            setRes(res.data.message)
-            setTimeout(()=>{
-                window.location.reload();
+            .then((res) => {
+                setRes(res.data.message);
+                history.push("/home");
+            }).catch((err) => {
+                console.log(err);
             })
-        }).catch((err)=>{
-            console.log(err);
-        })
     }
 
-    let UpdateSelected = (e)=>{
-        setsName(Array.isArray(e)?e.map(x=>x.label):[])
+    let UpdateSelected = (e) => {
+        setsName(Array.isArray(e) ? e.map(x => x.label) : [])
     }
     return (
         <div className="add-wrapper">
             <h3>Add Mentor</h3>
             <div className="inputfileds">
-                <label>Mentor Name* :</label><input className="input" type="text" placeholder="Mentor" required={true} onChange={(e)=>setmName(e.target.value)}></input>
+                <label>Mentor Name* :</label><input className="input" type="text" placeholder="Mentor" required={true} onChange={(e) => setmName(e.target.value)}></input>
                 <label>Student Name :</label>
-                <Select isMulti options={options} className="input" displayValue="Student" onChange={UpdateSelected}/>
+                <Select isMulti options={options} className="input" displayValue="Student" onChange={UpdateSelected} />
             </div>
             <br></br>
             <button className="btn" onClick={handleEvent}>Add</button>
